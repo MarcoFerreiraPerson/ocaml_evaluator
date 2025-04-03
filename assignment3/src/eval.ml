@@ -126,16 +126,16 @@ let rec eval_command (c : com) (env : environment) : environment =
             | _, _ -> raise TypeError
       in
       (var, value) :: env
-  | Cond (guard, if_branch, else_branch) ->
-      (match eval_expr guard env with
+  | Cond (cond, if_branch, else_branch) ->
+      (match eval_expr cond env with
        | Bool_Val true -> eval_command if_branch env
        | Bool_Val false -> eval_command else_branch env
        | _ -> raise TypeError)
-  | While (guard, body) ->
-      (match eval_expr guard env with
+  | While (cond, body) ->
+      (match eval_expr cond env with
        | Bool_Val true ->
            let _env = eval_command body env in
-           eval_command (While (guard, body)) _env
+           eval_command (While (cond, body)) _env
        | Bool_Val false -> env
        | _ -> raise TypeError)
   | For (count_expr, body) ->
